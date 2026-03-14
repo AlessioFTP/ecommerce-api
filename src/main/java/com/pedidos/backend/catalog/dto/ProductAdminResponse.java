@@ -7,5 +7,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class ProductAdminResponse extends ProductResponse{
     private Boolean state;
-
+    private Integer version;
 }
