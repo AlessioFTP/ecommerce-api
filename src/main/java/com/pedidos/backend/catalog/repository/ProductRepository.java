@@ -4,27 +4,25 @@ import com.pedidos.backend.catalog.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    //Búsqueda por nombre
-    Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
+    @Query("SELECT p FROM Product p WHERE " +
+            "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
+            "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
+            "(:maxPrice IS NULL OR p.price <= :maxPrice) AND " +
+            "(:categoryId IS NULL OR p.category.id = :categoryId) AND " +
+            "(p.state = true)")
+    Page<Product> findByFilters(
+            @Param("name") String name,
+            @Param("minPrice") BigDecimal minPrice,
+            @Param("maxPrice") BigDecimal maxPrice,
+            @Param("categoryId") Long categoryId,
+            Pageable pageable);
 
-    //Búsqueda por precio mayor o igual a
-    Page<Product> findByPriceGreaterThanEqual(BigDecimal minPrice, Pageable pageable);
-
-    //Búsqueda por precio menor o igual a
-    Page<Product> findByPriceLessThanEqual(BigDecimal maxPrice, Pageable pageable);
-
-    //Búsqueda por Categoría
-    Page<Product> findByCategoryId(Long categoryId, Pageable pageable);
-
-    //Búsqueda combinada de rango de precios
-    Page<Product> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
-
-    //Búsqueda solo productos activos por categoría
-    Page<Product> findByCategoryIdAndStateTrue(Long categoryId, Pageable pageable);
 }
