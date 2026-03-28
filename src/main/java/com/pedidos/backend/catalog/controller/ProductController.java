@@ -4,7 +4,7 @@ package com.pedidos.backend.catalog.controller;
 import com.pedidos.backend.catalog.dto.ProductAdminResponse;
 import com.pedidos.backend.catalog.dto.ProductRequest;
 import com.pedidos.backend.catalog.dto.ProductResponse;
-import com.pedidos.backend.catalog.service.ProductService;
+import com.pedidos.backend.catalog.service.impl.ProductServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 @RequestMapping("api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
 
     @GetMapping
     public ResponseEntity<Page<ProductResponse>> getProducts(@RequestParam(required = false) String name,
