@@ -1,4 +1,4 @@
-package com.pedidos.backend.catalog.exception;
+package com.pedidos.backend.exception;
 
 public class BadRequestException extends RuntimeException {
     public BadRequestException(String message) {

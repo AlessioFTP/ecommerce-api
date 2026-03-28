@@ -1,4 +1,4 @@
-package com.pedidos.backend.catalog.exception;
+package com.pedidos.backend.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {

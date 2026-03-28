@@ -1,4 +1,4 @@
-package com.pedidos.backend.catalog.exception;
+package com.pedidos.backend.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
