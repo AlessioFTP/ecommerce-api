@@ -3,6 +3,8 @@ package com.pedidos.backend.catalog.service.impl;
 import com.pedidos.backend.catalog.dto.CategoryAdminResponse;
 import com.pedidos.backend.catalog.dto.CategoryRequest;
 import com.pedidos.backend.catalog.dto.CategoryResponse;
+import com.pedidos.backend.catalog.exception.BadRequestException;
+import com.pedidos.backend.catalog.exception.ResourceNotFoundException;
 import com.pedidos.backend.catalog.model.Category;
 import com.pedidos.backend.catalog.repository.CategoryRepository;
 import com.pedidos.backend.catalog.service.CategoryService;
@@ -24,7 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse createCategory(CategoryRequest request) {
         //Validar si el nombre ya existe
         if (categoryRepository.findByNameIgnoreCase(request.getName()).isPresent()) {
-            throw new RuntimeException("Ya existe una categoría con el nombre: " + request.getName());
+            throw new BadRequestException("Ya existe una categoría con el nombre: " + request.getName());
         }
 
         //Mapear DTO a un objeto
@@ -43,7 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     public CategoryResponse getCategoryById(Long id) {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con ID: " + id));
         return mapToResponse(category);
     }
 
@@ -51,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryAdminResponse getCategoryAdminById(Long id){
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con ID: " + id));
         return mapToResponseAdmin(category);
     }
 
@@ -77,13 +79,13 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse updateCategory(Long id, CategoryRequest request) {
         //Buscar la categoría existente
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No se puede actualizar. Categoría no encontrada."));
+                .orElseThrow(() -> new ResourceNotFoundException("No se puede actualizar. Categoría no encontrada."));
 
         //Validar que el nuevo nómbre sea único.
         categoryRepository.findByNameIgnoreCase(request.getName())
                 .ifPresent(existing -> {
                     if (!existing.getId().equals(id)) {
-                        throw new RuntimeException("El nombre '" + request.getName() + "' ya está en uso por otra categoría.");
+                        throw new BadRequestException("El nombre '" + request.getName() + "' ya está en uso por otra categoría.");
                     }
                 });
 

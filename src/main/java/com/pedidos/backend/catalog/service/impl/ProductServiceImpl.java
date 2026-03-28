@@ -1,6 +1,7 @@
 package com.pedidos.backend.catalog.service.impl;
 
 import com.pedidos.backend.catalog.dto.*;
+import com.pedidos.backend.catalog.exception.ResourceNotFoundException;
 import com.pedidos.backend.catalog.model.Category;
 import com.pedidos.backend.catalog.model.Product;
 import com.pedidos.backend.catalog.repository.CategoryRepository;
@@ -27,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse createProduct(ProductRequest request) {
         //Validar Categoría
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada"));
 
         //Generar SKU único
         String generatedSku = generateSku(request.getName(), category.getName());
@@ -51,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .filter(Product::getState)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
         return mapToResponse(product);
     }
     @Override
@@ -65,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
         product.setState(false);
         productRepository.save(product);
     }
@@ -74,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public ProductAdminResponse getProductAdminById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
         return mapToResponseAdmin(product);
     }
 
@@ -132,10 +133,10 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse updateProduct(Long id, ProductRequest request) {
         //Buscar el producto
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No se puede actualizar el producto."));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
 
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada"));
 
         //Actualizar campos
         product.setName(request.getName());
