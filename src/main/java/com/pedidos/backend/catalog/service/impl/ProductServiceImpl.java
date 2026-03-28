@@ -1,7 +1,7 @@
 package com.pedidos.backend.catalog.service.impl;
 
 import com.pedidos.backend.catalog.dto.*;
-import com.pedidos.backend.catalog.exception.ResourceNotFoundException;
+import com.pedidos.backend.exception.ResourceNotFoundException;
 import com.pedidos.backend.catalog.model.Category;
 import com.pedidos.backend.catalog.model.Product;
 import com.pedidos.backend.catalog.repository.CategoryRepository;
