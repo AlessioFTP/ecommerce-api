@@ -1,4 +1,8 @@
 spring:
+  security:
+    jwt:
+      secret-key: "eb934b0e40e85bc3baa3417ea79651272df9d1ca707109b9cd06c2b75fd21a1d"
+      expiration: 86400000
   application:
     name: Api de Pedidos
   datasource:
